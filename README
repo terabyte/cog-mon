@@ -1,0 +1,31 @@
+If you don't have rvm, get rvm (or rbenv):
+http://rvm.io/rvm/install
+
+To install the dependencies:
+rvm install ruby-2.1.1
+rvm use --create ruby-2.1.1@cog-mon
+bundle install
+bundle exec bin/check_hashrate.rb
+
+the script returns true/false on success/fail, and only prints out anything if
+things fail.  Typical failure output looks like this:
+
+ERROR: TerraMiner0 is hashing at 1284000000000.0 but 1500000000000.0 is expected (85.6%)
+ERROR: TerraMiner1 is not hashing at all!
+ERROR: TerraMiner7 is not hashing at all!
+
+You could run this on a 5-minute crontab, for example, cron automatically sends
+emails only on failure.  You can set your MAILTO in the crontab to be the
+address you want notified (for example, most cell providers have an
+email-to-sms bridge too).  Instead of running `bundle exec FOO` you can run
+RVM's wrapper script for that gemset to ensure the script runs with the proper
+dependencies.  See the example below.  A sample crontab might look like this:
+
+MAILTO="XXXXXXXXXX@vtext.com" # 10-digit number @ vtext.com works for verizon customers
+# m h  dom mon dow   command
+*/5 * * * * /home/USERNAME/.rvm/wrappers/ruby-2.1.1@cog-mon/wrappers/ruby /home/USERNAME/cog-mon/bin/check_hashrate.rb
+
+FUTURE FEATURES/BUGS/TODO:
+1. Break out devices into a config file
+2. take some action on error
+3. ???
